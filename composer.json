@@ -36,5 +36,12 @@
             "tests/utils/FirstColumnOnlySerialiser.php"
         ]
     },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Cyberduck\\LaravelExcel\\ExcelServiceProvider"
+            ]
+        }
+    },
     "minimum-stability": "stable"
 }

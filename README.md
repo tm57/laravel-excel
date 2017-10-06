@@ -21,9 +21,29 @@ Use composer to download the package:
 composer require cyber-duck/laravel-excel
 ```
 
-Register the service provider in `config/app.php` adding *Cyberduck\LaravelExcel\ExcelServiceProvider* to the provider array.
+### Laravel 4.x
 
-Note. If you are on Laravel 4, use *Cyberduck\LaravelExcel\ExcelLegacyServiceProvider*
+Register the service provider in `app/config/app.php` by adding this line to providers array.
+
+```php
+'providers' => [
+	'Cyberduck\LaravelExcel\ExcelLegacyServiceProvider',
+],
+```
+
+### Laravel < 5.5
+
+Register the service provider in `config/app.php` by adding this line to providers array.
+
+```php
+'providers' => [
+	'Cyberduck\LaravelExcel\ExcelServiceProvider',
+],
+```
+
+### Laravel 5.5
+
+No need to register anything, since it used package auto discovery feature in Laravel 5.5.
 
 ## Export Excel
 
