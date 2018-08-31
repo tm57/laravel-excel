@@ -133,6 +133,10 @@ class ExampleSerialiser implements SerialiserInterface
     }
 }
 ```
+then set the serialiser before saving the file the collection.
+```
+$collection = Exporter::make('Excel')->load($yourCollection)->setSerialiser(new ExampleSerialiser)->stream($yourFileName);
+```
 
 ## Import Excel
 Add
@@ -175,9 +179,9 @@ namespace App\Parsers;
 use App\Models\YourModel;
 use Cyberduck\LaravelExcel\Contract\ParserInterface;
 
-class ExampleSerialiser implements ParserInterface
+class ExampleParser implements ParserInterface
 {
-    public function transform($row)
+    public function transform($row, $header)
     {
         $model = new YourModel();
         $model->field1 = $row[0];
@@ -187,6 +191,10 @@ class ExampleSerialiser implements ParserInterface
         return $model;
     }
 }
+```
+then set the parser before creating the collection.
+```
+$collection = Importer::make('Excel')->load($filepath)->setParser(new ExampleParser)->getCollection();
 ```
 
 ## Different formats
