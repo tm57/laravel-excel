@@ -23,11 +23,11 @@ composer require cyber-duck/laravel-excel
 
 ### Laravel 4.x
 
-Register the service provider in `app/config/app.php` by adding this line to providers array.
+Register the service provider in `config/app.php` by adding this line to providers array.
 
 ```php
 'providers' => [
-	'Cyberduck\LaravelExcel\ExcelLegacyServiceProvider',
+	Cyberduck\LaravelExcel\ExcelLegacyServiceProvider::class,
 ],
 ```
 
@@ -37,7 +37,7 @@ Register the service provider in `config/app.php` by adding this line to provide
 
 ```php
 'providers' => [
-	'Cyberduck\LaravelExcel\ExcelServiceProvider',
+	Cyberduck\LaravelExcel\ExcelServiceProvider::class,
 ],
 ```
 
