@@ -151,7 +151,7 @@ $collection = $excel->getCollection();
 
 The importer class is fluent, then you can also write
 ```
-return Importer::make('Excel')->getCollection($filepath)->getCollection();
+return Importer::make('Excel')->load($filepath)->getCollection();
 ```
 
 ### Advanced usage

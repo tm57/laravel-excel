@@ -37,11 +37,13 @@ abstract class AbstractSpreadsheet implements ImporterInterface
     public function load($path)
     {
         $this->path = $path;
+        return $this;
     }
 
     public function setSheet($sheet)
     {
         $this->sheet = $sheet;
+        return $this;
     }
 
     public function hasHeader($hasHeaderRow)
@@ -52,11 +54,13 @@ abstract class AbstractSpreadsheet implements ImporterInterface
     public function setParser(ParserInterface $parser)
     {
         $this->parser = $parser;
+        return $this;
     }
 
     public function setModel(Model $model)
     {
         $this->model = $model;
+        return $this;
     }
 
     abstract public function getType();
