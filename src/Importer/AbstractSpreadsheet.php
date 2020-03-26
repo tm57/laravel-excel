@@ -1,7 +1,6 @@
 <?php
 namespace Cyberduck\LaravelExcel\Importer;
 
-use Box\Spout\Reader\ReaderFactory;
 use Illuminate\Database\Eloquent\Model;
 use Cyberduck\LaravelExcel\Parser\BasicParser;
 use Cyberduck\LaravelExcel\Contract\ParserInterface;
@@ -65,6 +64,8 @@ abstract class AbstractSpreadsheet implements ImporterInterface
 
     abstract public function getType();
 
+    abstract public function createReader();
+
     public function getCollection()
     {
         $headers = false;
@@ -80,9 +81,9 @@ abstract class AbstractSpreadsheet implements ImporterInterface
 
             foreach ($sheet->getRowIterator() as $rowindex => $row) {
                 if ($rowindex == 1 && $this->hasHeaderRow) {
-                    $headers = $row;
+                    $headers = $row->toArray();
                 } else {
-                    $data = $this->parser->transform($row, $headers);
+                    $data = $this->parser->transform($row->toArray(), $headers);
 
                     if ($data !== false) {
                         if ($this->model) {
@@ -119,9 +120,9 @@ abstract class AbstractSpreadsheet implements ImporterInterface
 
             foreach ($sheet->getRowIterator() as $rowindex => $row) {
                 if ($rowindex == 1 && $this->hasHeaderRow) {
-                    $headers = $row;
+                    $headers = $row->toArray();
                 } else {
-                    $data = $this->parser->transform($row, $headers);
+                    $data = $this->parser->transform($row->toArray(), $headers);
                     if ($data !== false) {
                         $relationships = [];
                         $when = array_intersect_key($data, $updateIfEquals);
@@ -160,7 +161,7 @@ abstract class AbstractSpreadsheet implements ImporterInterface
 
     protected function open()
     {
-        $reader= ReaderFactory::create($this->type);
+        $reader = $this->createReader();
         $reader->open($this->path);
         $this->callbacks->each(function ($elem) use (&$writer) {
             call_user_func_array(array($writer, $elem[0]), $elem[1]);

@@ -2,7 +2,7 @@
 namespace Cyberduck\LaravelExcel\Exporter;
 
 use Illuminate\Support\Collection;
-use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 use Illuminate\Database\Query\Builder;
 use Cyberduck\LaravelExcel\Serialiser\BasicSerialiser;
 use Cyberduck\LaravelExcel\Contract\SerialiserInterface;
@@ -56,6 +56,8 @@ abstract class AbstractSpreadsheet implements ExporterInterface
 
     abstract public function getType();
 
+    abstract public function createWriter();
+
     public function save($filename)
     {
         $writer = $this->create();
@@ -74,7 +76,7 @@ abstract class AbstractSpreadsheet implements ExporterInterface
 
     protected function create()
     {
-        $writer = WriterFactory::create($this->type);
+        $writer = $this->createWriter();
         $this->callbacks->each(function ($elem) use (&$writer) {
             call_user_func_array(array($writer, $elem[0]), $elem[1]);
         });
@@ -85,22 +87,27 @@ abstract class AbstractSpreadsheet implements ExporterInterface
     {
         $headerRow = $this->serialiser->getHeaderRow();
         if (!empty($headerRow)) {
-            $writer->addRow($headerRow);
+            $row = WriterEntityFactory::createRowFromArray($headerRow);
+            $writer->addRow($row);
         }
         if ($this->data instanceof Builder) {
             if (isset($this->chuncksize)) {
                 $this->data->chunk($this->chuncksize);
             } else {
-                $data = $this->data->get();
-                foreach ($data as $record) {
-                    $writer->addRow($this->serialiser->getData($record));
-                }
+                $this->addRowsDataToWriter($this->data->get(), $writer);
             }
         } else {
-            foreach ($this->data as $record) {
-                $writer->addRow($this->serialiser->getData($record));
-            }
+            $this->addRowsDataToWriter($this->data, $writer);
         }
         return $writer;
+    }
+
+    public function addRowsDataToWriter($data, $writer)
+    {
+        foreach ($data as $record) {
+            $recordData = $this->serialiser->getData($record);
+            $row = WriterEntityFactory::createRowFromArray($recordData);
+            $writer->addRow($row);
+        }
     }
 }
