@@ -6,7 +6,7 @@ class TestCase extends BaseTestCase
 {
     protected $baseUrl = 'http://localhost';
 
-    const DEFAULT_ROW = [
+    protected $defaultRow = [
         'field1' => 'A',
         'field2' => 'B',
         'field3' => 'C',
@@ -39,7 +39,7 @@ class TestCase extends BaseTestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 
@@ -53,7 +53,7 @@ class TestCase extends BaseTestCase
             $rows = [];
             $limit = ($j>floor($item/50)) ? 50 : ($item-($j*50));
             for ($i = 0; $i<$limit; $i++) {
-                $rows[] = self::DEFAULT_ROW;
+                $rows[] = $this->defaultRow;
             }
             DB::table('items')->insert($rows);
         }

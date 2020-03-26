@@ -1,19 +1,19 @@
 <?php
-use Box\Spout\Common\Type;
-use Box\Spout\Reader\ReaderFactory;
-use Cyberduck\LaravelExcel\Factory\ImporterFactory;
+
+use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 
 class ExporterTest extends TestCase
 {
     const FILE = __DIR__.'/../docs/test.xlsx';
 
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
+        $this->file = __DIR__.'/../docs/test.xlsx';
         (new Migration)->up();
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         (new Migration)->down();
         parent::tearDown();
@@ -30,11 +30,11 @@ class ExporterTest extends TestCase
 
         //Read the content
         $lines = 0;
-        $reader = ReaderFactory::create(Type::CSV);
-        $reader->open(self::FILE);
+        $reader = ReaderEntityFactory::createCSVReader();
+        $reader->open($this->file);
         foreach ($reader->getSheetIterator() as $index => $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
-                $this->assertEquals(array_values(self::DEFAULT_ROW), $row);
+                $this->assertEquals(array_values($this->defaultRow), $row->toArray());
                 $lines++;
             }
         }
@@ -44,7 +44,7 @@ class ExporterTest extends TestCase
         unlink(self::FILE);
     }
 
-    public function test_can_export_odt()
+    public function test_can_export_ods()
     {
         $itemsToSeed = 2;
         $this->seed($itemsToSeed);
@@ -55,11 +55,11 @@ class ExporterTest extends TestCase
 
         //Read the content
         $lines = 0;
-        $reader = ReaderFactory::create(Type::ODS);
-        $reader->open(self::FILE);
+        $reader = ReaderEntityFactory::createODSReader();
+        $reader->open($this->file);
         foreach ($reader->getSheetIterator() as $index => $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
-                $this->assertEquals(array_values(self::DEFAULT_ROW), $row);
+                $this->assertEquals(array_values($this->defaultRow), $row->toArray());
                 $lines++;
             }
         }
@@ -80,11 +80,11 @@ class ExporterTest extends TestCase
 
         //Read the content
         $lines = 0;
-        $reader = ReaderFactory::create(Type::XLSX);
-        $reader->open(self::FILE);
+        $reader = ReaderEntityFactory::createXLSXReader();
+        $reader->open($this->file);
         foreach ($reader->getSheetIterator() as $index => $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
-                $this->assertEquals(array_values(self::DEFAULT_ROW), $row);
+                $this->assertEquals(array_values($this->defaultRow), $row->toArray());
                 $lines++;
             }
         }
@@ -105,12 +105,12 @@ class ExporterTest extends TestCase
 
         //Read the content
         $lines = 0;
-        $reader = ReaderFactory::create(Type::CSV);
-        $reader->open(self::FILE);
+        $reader = ReaderEntityFactory::createCSVReader();
+        $reader->open($this->file);
         foreach ($reader->getSheetIterator() as $index => $sheet) {
             foreach ($sheet->getRowIterator() as $idx => $row) {
-                $expected = array_merge([strval($idx)], array_values(self::DEFAULT_ROW));
-                $this->assertEquals($expected, $row);
+                $expected = array_merge([strval($idx)], array_values($this->defaultRow));
+                $this->assertEquals($expected, $row->toArray());
                 $lines++;
             }
         }
@@ -131,12 +131,12 @@ class ExporterTest extends TestCase
 
         //Read the content
         $lines = 0;
-        $reader = ReaderFactory::create(Type::CSV);
-        $reader->open(self::FILE);
+        $reader = ReaderEntityFactory::createCSVReader();
+        $reader->open($this->file);
         foreach ($reader->getSheetIterator() as $index => $sheet) {
             foreach ($sheet->getRowIterator() as $idx => $row) {
-                $expected = array_merge([strval($idx)], array_values(self::DEFAULT_ROW));
-                $this->assertEquals($expected, $row);
+                $expected = array_merge([strval($idx)], array_values($this->defaultRow));
+                $this->assertEquals($expected, $row->toArray());
                 $lines++;
             }
         }
@@ -157,14 +157,14 @@ class ExporterTest extends TestCase
 
         //Read the content
         $lines = 0;
-        $reader = ReaderFactory::create(Type::CSV);
-        $reader->open(self::FILE);
+        $reader = ReaderEntityFactory::createCSVReader();
+        $reader->open($this->file);
         foreach ($reader->getSheetIterator() as $index => $sheet) {
             foreach ($sheet->getRowIterator() as $row) {
                 if ($lines == 0) {
-                    $this->assertEquals(['HEADER'], $row);
+                    $this->assertEquals(['HEADER'], $row->toArray());
                 } else {
-                    $this->assertEquals(['A'], $row);
+                    $this->assertEquals(['A'], $row->toArray());
                 }
                 $lines++;
             }
