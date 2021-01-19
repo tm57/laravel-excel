@@ -41,7 +41,7 @@ Register the service provider in `config/app.php` by adding this line to provide
 ],
 ```
 
-### Laravel 5.5
+### Laravel > 5.5
 
 No need to register anything, since it used package auto discovery feature in Laravel 5.5.
 
